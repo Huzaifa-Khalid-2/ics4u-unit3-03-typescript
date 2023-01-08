@@ -1,70 +1,81 @@
 /**
- * This program generates 250 random numbers in an array
- * and allows the user to search the array for a number.
+ * This program finds an item using binary search.
  *
  * By:      Huzaifa Khalid
  * Version: 1.0
- * Since:   2022-9-24
+ * Since:   2022-11-15
  */
 
 import promptSync from 'prompt-sync'
 
+const prompt = promptSync()
+
+/**
+ * Binary Search Function.
+ *
+ * @param {number[]} numArray - all numbers to be searched through.
+ * @param {number} target - number being requested by the user.
+ * @param {number} min - lowest point in the array.
+ * @param {number} max - highest point in the array.
+ * @returns {number} the array index that matches the target.
+ */
 function binarySearch(
-  userArray: number[],
-  userNumber: number,
-  lowIndex: number,
-  highIndex: number
+  numArray: number[],
+  target: number,
+  min: number,
+  max: number
 ): number {
-  const mid = (lowIndex + highIndex) / 2
-  if (userNumber === userArray[mid]) {
+  // base case to prevent infinite loop
+  if (min > max) {
+    return -1
+  }
+
+  const mid = Math.floor((min + max) / 2)
+
+  // true if target equals the matching index
+  if (numArray[mid] === target) {
     return mid
-  } else if (userNumber > userArray[mid]) {
-    return binarySearch(userArray, userNumber, mid + 1, highIndex)
+    // searches in the lower half if middle > target
+  } else if (numArray[mid] > target) {
+    return binarySearch(numArray, target, min, mid - 1)
+    // searches in the upper half if middle < target
   } else {
-    return binarySearch(userArray, userNumber, lowIndex, mid - 1)
+    return binarySearch(numArray, target, mid + 1, max)
   }
 }
 
-function main() {
-  console.log('Binary Search Program.')
-  try {
-    let randomNumberArray: number[] = new Array(250)
-    for (let counter = 0; counter < randomNumberArray.length; counter++) {
-      let randomNum: number
-      do {
-        randomNum = Math.floor(Math.random() * 999)
-      } while (randomNumberArray.includes(randomNum))
-      {
-        randomNumberArray[counter] = randomNum
-      }
-    }
-    let numberArray: number[] = randomNumberArray
-    numberArray.sort(function (a, b) {
-      return a - b
-    })
+// declares constants
+const MIN = 1
+const MAX = 999
+const ARRAY_SIZE = 250
 
-    console.log('\nSorted list of numbers:\n')
-    console.log(numberArray)
-    console.log('\n\n')
+const randomNumArray = new Array(ARRAY_SIZE)
 
-    const prompt = promptSync()
-    const userInput = prompt('What number are you searching for in the array: ')
-    const userNumber = parseInt(userInput)
-    if (userNumber > 999 || userNumber < 0) {
-      throw new Error()
-    } else {
-      const searchResult = binarySearch(
-        numberArray,
-        userNumber,
-        0,
-        numberArray.length
-      )
-      console.log('')
-      console.log('Your number is in index: %d ', searchResult)
-    }
-  } catch (error) {
-    console.log('')
-    console.log('EROOR: Invalid Input')
-  }
+for (let counter = 0; counter < randomNumArray.length; counter++) {
+  randomNumArray[counter] = Math.floor(Math.random() * MAX + MIN)
 }
-main()
+
+randomNumArray.sort(function (a, b) {
+  return a - b
+})
+
+console.log('Sorted Array: ')
+
+for (let counter = 0; counter < randomNumArray.length; counter++) {
+  process.stdout.write(`${String(randomNumArray[counter])}, `)
+}
+
+console.log('\n')
+
+const numInput = Number(prompt('Enter a number to search for (0 - 999): '))
+
+console.log(
+  `${numInput} is in index ${binarySearch(
+    randomNumArray,
+    numInput,
+    0,
+    ARRAY_SIZE - 1
+  )}.`
+)
+
+console.log('\nDone.')
