@@ -19,7 +19,7 @@ import promptSync from 'prompt-sync'
  * @param {number} highIndex the high index
  * @returns {number} the factorial of the number.
  */
-function binarySearch (
+function binarySearch(
   array: number[],
   target: number,
   lowIndex: number,
