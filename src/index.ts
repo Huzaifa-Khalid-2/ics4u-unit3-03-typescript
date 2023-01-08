@@ -1,5 +1,6 @@
 /**
- * This program finds an item using binary search.
+ * This program generates 250 random numbers in an array
+ * and allows the user to search the array for a number.
  *
  * By:      Huzaifa Khalid
  * Version: 1.0
@@ -8,74 +9,79 @@
 
 import promptSync from 'prompt-sync'
 
-const prompt = promptSync()
-
 /**
- * Binary Search Function.
  *
- * @param {number[]} numArray - all numbers to be searched through.
- * @param {number} target - number being requested by the user.
- * @param {number} min - lowest point in the array.
- * @param {number} max - highest point in the array.
- * @returns {number} the array index that matches the target.
+ * This is the binarySearch function.
+ *
+ * @param {number} array the array.
+ * @param {number} target the target.
+ * @param {number} lowIndex the lowIndex.
+ * @param {number} highIndex the high index
+ * @returns {number} the factorial of the number.
  */
-function binarySearch(
-  numArray: number[],
+function binarySearch (
+  array: number[],
   target: number,
-  min: number,
-  max: number
+  lowIndex: number,
+  highIndex: number
 ): number {
-  // base case to prevent infinite loop
-  if (min > max) {
+  if (lowIndex > highIndex) {
     return -1
   }
 
-  const mid = Math.floor((min + max) / 2)
+  // Find the middle index
+  const middle = Math.floor((lowIndex + highIndex) / 2)
 
-  // true if target equals the matching index
-  if (numArray[mid] === target) {
-    return mid
-    // searches in the lower half if middle > target
-  } else if (numArray[mid] > target) {
-    return binarySearch(numArray, target, min, mid - 1)
-    // searches in the upper half if middle < target
+  if (array[middle] === target) {
+    return middle
+  }
+
+  if (array[middle] > target) {
+    return binarySearch(array, target, lowIndex, middle - 1)
   } else {
-    return binarySearch(numArray, target, mid + 1, max)
+    return binarySearch(array, target, middle + 1, highIndex)
   }
 }
 
-// declares constants
-const MIN = 1
-const MAX = 999
-const ARRAY_SIZE = 250
+const prompt = promptSync()
 
-const randomNumArray = new Array(ARRAY_SIZE)
+// The variables
+const min = 1
+const max = 999
+const arraySize = 250
 
-for (let counter = 0; counter < randomNumArray.length; counter++) {
-  randomNumArray[counter] = Math.floor(Math.random() * MAX + MIN)
+// The array size
+const numArray = new Array(arraySize)
+
+// Getting the random numbers for the array
+for (let counter = 0; counter < numArray.length; counter++) {
+  numArray[counter] = Math.floor(Math.random() * max + min)
 }
 
-randomNumArray.sort(function (a, b) {
+// sorting the array
+numArray.sort(function (a, b) {
   return a - b
 })
 
-console.log('Sorted Array: ')
+// Asks for the users input
+console.log('\nBinary Search Program')
+console.log('Sorted List of numbers: ')
 
-for (let counter = 0; counter < randomNumArray.length; counter++) {
-  process.stdout.write(`${String(randomNumArray[counter])}, `)
+// the elements in the array.
+// https://stackoverflow.com/questions/56262258/how-to-print-array-elements
+for (let counter = 0; counter < numArray.length; counter++) {
+  process.stdout.write(`${String(numArray[counter])},`)
 }
 
-console.log('\n')
-
-const numInput = Number(prompt('Enter a number to search for (0 - 999): '))
-
-console.log(
-  `${numInput} is in index ${binarySearch(
-    randomNumArray,
-    numInput,
-    0,
-    ARRAY_SIZE - 1
-  )}.`
+// asks for the user input
+console.log('')
+console.log('')
+const userInput = Number(
+  prompt('Enter a number in array (Between 0 and 999): ')
 )
 
+// What index it is in
+console.log(
+  `Your number is in the ${binarySearch(numArray, userInput, 0, arraySize - 1)}`
+)
 console.log('\nDone.')
